@@ -90,11 +90,11 @@ function animate() {
 
         const dist = Math.sqrt(dx*dx + dy*dy);
 
-        if(dist < 120){
+        if(dist < 250){
 
             const effect = 1 - dist/120;
 
-            size += effect * 2.5;
+            size += effect * 10;
 
             alpha = 1;
 
@@ -110,7 +110,7 @@ function animate() {
 
         ctx.arc(star.x, star.y, size, 0, Math.PI*2);
 
-        ctx.shadowBlur = size * 12;
+        ctx.shadowBlur = size * 40;
 
         ctx.shadowColor = "white";
 
