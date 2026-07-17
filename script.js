@@ -1,129 +1,90 @@
 const canvas = document.getElementById("sky");
 const ctx = canvas.getContext("2d");
 
-function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+function resize(){
+
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+
 }
 
 resize();
-window.addEventListener("resize", resize);
 
-// ---------- Touch / Mouse ----------
+addEventListener("resize",resize);
 
-const pointer = {
-    x: -9999,
-    y: -9999
-};
+const stars=[];
 
-function updatePointer(x, y) {
-    pointer.x = x;
-    pointer.y = y;
-}
+for(let i=0;i<2500;i++){
 
-window.addEventListener("mousemove", e => {
-    updatePointer(e.clientX, e.clientY);
-});
+    let size;
 
-window.addEventListener("touchmove", e => {
-    updatePointer(
-        e.touches[0].clientX,
-        e.touches[0].clientY
-    );
-});
+    const r=Math.random();
 
-window.addEventListener("touchstart", e => {
-    updatePointer(
-        e.touches[0].clientX,
-        e.touches[0].clientY
-    );
-});
+    if(r<0.92){
 
-// ---------- Stars ----------
+        size=Math.random()*1.2;
 
-const stars = [];
+    }else if(r<0.99){
 
-for (let i = 0; i < 1800; i++) {
+        size=1.5+Math.random()*1.8;
+
+    }else{
+
+        size=3+Math.random()*2;
+
+    }
 
     stars.push({
 
-        x: Math.random() * canvas.width,
+        x:Math.random()*canvas.width,
 
-        y: Math.random() * canvas.height,
+        y:Math.random()*canvas.height,
 
-        radius: Math.random() * 1.4 + 0.2,
+        size:size,
 
-        opacity: Math.random(),
+        alpha:.2+Math.random()*.8,
 
-        speed: (Math.random() - 0.5) * 0.03,
+        twinkle:Math.random()*Math.PI*2,
 
-        pulse: Math.random() * Math.PI * 2,
-
-        special: Math.random() < 0.015
+        speed:(Math.random()-.5)*0.03
 
     });
 
 }
 
-function animate() {
+function draw(){
 
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="#01020a";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    for (const star of stars) {
+    for(const s of stars){
 
-        star.x += star.speed;
+        s.x+=s.speed;
 
-        if(star.x < 0)
-            star.x = canvas.width;
+        if(s.x<0)s.x=canvas.width;
 
-        if(star.x > canvas.width)
-            star.x = 0;
+        if(s.x>canvas.width)s.x=0;
 
-        star.pulse += 0.02;
+        s.twinkle+=0.02;
 
-        let size = star.radius;
-
-        let alpha = star.opacity;
-
-        const dx = pointer.x - star.x;
-        const dy = pointer.y - star.y;
-
-        const dist = Math.sqrt(dx*dx + dy*dy);
-
-        if(dist < 250){
-
-            const effect = 1 - dist/120;
-
-            size += effect * 10;
-
-            alpha = 1;
-
-        }
-
-        if(star.special){
-
-            size += Math.sin(star.pulse)*0.35;
-
-        }
+        const a=s.alpha+Math.sin(s.twinkle)*0.15;
 
         ctx.beginPath();
 
-        ctx.arc(star.x, star.y, size, 0, Math.PI*2);
+        ctx.arc(s.x,s.y,s.size,0,Math.PI*2);
 
-        ctx.shadowBlur = size * 40;
+        ctx.fillStyle=`rgba(255,255,255,${a})`;
 
-        ctx.shadowColor = "white";
+        ctx.shadowBlur=s.size*8;
 
-        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+        ctx.shadowColor="white";
 
         ctx.fill();
 
     }
 
-    ctx.shadowBlur = 0;
-
-    requestAnimationFrame(animate);
+    requestAnimationFrame(draw);
 
 }
 
-animate();
+draw();
