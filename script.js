@@ -1,37 +1,19 @@
 const canvas = document.getElementById("sky");
 const ctx = canvas.getContext("2d");
 
+// ---------- Resize ----------
 function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
-
 resize();
 window.addEventListener("resize", resize);
 
+// ---------- Stars ----------
+const STAR_COUNT = 700;
 const stars = [];
 
-const STAR_COUNT = 900;
-
 for (let i = 0; i < STAR_COUNT; i++) {
-
-    let size;
-
-    const r = Math.random();
-
-    if (r < 0.90) {
-
-        size = Math.random() * 1.2 + 0.3;
-
-    } else if (r < 0.98) {
-
-        size = Math.random() * 2 + 1.5;
-
-    } else {
-
-        size = Math.random() * 3 + 3;
-
-    }
 
     stars.push({
 
@@ -39,55 +21,49 @@ for (let i = 0; i < STAR_COUNT; i++) {
 
         y: Math.random() * canvas.height,
 
-        size,
+        radius: Math.random() * 2 + 0.3,
 
         alpha: 0.3 + Math.random() * 0.7,
 
         twinkle: Math.random() * Math.PI * 2,
 
-        driftX: (Math.random() - 0.5) * 0.03,
+        dx: (Math.random() - 0.5) * 0.03,
 
-        driftY: (Math.random() - 0.5) * 0.03
+        dy: (Math.random() - 0.5) * 0.03
 
     });
 
 }
 
+// ---------- Animation ----------
 function animate() {
 
-    ctx.fillStyle = "#02040b";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    for (const star of stars) {
+    ctx.fillStyle = "#02030a";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
 
-        star.x += star.driftX;
-        star.y += star.driftY;
+    for (const s of stars) {
 
-        if (star.x < 0) star.x = canvas.width;
-        if (star.x > canvas.width) star.x = 0;
+        s.x += s.dx;
+        s.y += s.dy;
 
-        if (star.y < 0) star.y = canvas.height;
-        if (star.y > canvas.height) star.y = 0;
+        if (s.x < 0) s.x = canvas.width;
+        if (s.x > canvas.width) s.x = 0;
 
-        star.twinkle += 0.015;
+        if (s.y < 0) s.y = canvas.height;
+        if (s.y > canvas.height) s.y = 0;
 
-        const brightness =
-            star.alpha +
-            Math.sin(star.twinkle) * 0.12;
+        s.twinkle += 0.015;
+
+        const alpha = s.alpha + Math.sin(s.twinkle) * 0.15;
 
         ctx.beginPath();
+        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
 
-        ctx.arc(
-            star.x,
-            star.y,
-            star.size,
-            0,
-            Math.PI * 2
-        );
+        if (s.radius > 1.8) {
 
-        if (star.size > 2.5) {
-
-            ctx.shadowBlur = 15;
+            ctx.shadowBlur = 8;
             ctx.shadowColor = "white";
 
         } else {
@@ -96,8 +72,7 @@ function animate() {
 
         }
 
-        ctx.fillStyle = `rgba(255,255,255,${brightness})`;
-
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
         ctx.fill();
 
     }
