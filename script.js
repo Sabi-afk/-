@@ -1,105 +1,108 @@
-import * as THREE from 'https://unpkg.com/three@0.166.1/build/three.module.js';
+const canvas = document.getElementById("sky");
+const ctx = canvas.getContext("2d");
 
-// Scene
-const scene = new THREE.Scene();
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
 
-// Camera
-const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    2000
-);
+resize();
+window.addEventListener("resize", resize);
 
-camera.position.z = 300;
+const stars = [];
 
-// Renderer
-const renderer = new THREE.WebGLRenderer({
-    antialias: true
-});
+const STAR_COUNT = 900;
 
-renderer.setSize(window.innerWidth, window.innerHeight);
+for (let i = 0; i < STAR_COUNT; i++) {
 
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    let size;
 
-document.body.appendChild(renderer.domElement);
+    const r = Math.random();
 
-// Hide old canvas
-document.getElementById("sky").style.display = "none";
+    if (r < 0.90) {
 
-// Stars
-const starGeometry = new THREE.BufferGeometry();
+        size = Math.random() * 1.2 + 0.3;
 
-const starCount = 5000;
+    } else if (r < 0.98) {
 
-const positions = [];
+        size = Math.random() * 2 + 1.5;
 
-for(let i=0;i<starCount;i++){
+    } else {
 
-    positions.push(
+        size = Math.random() * 3 + 3;
 
-        (Math.random()-0.5)*1200,
-        (Math.random()-0.5)*1200,
-        (Math.random()-0.5)*1200
+    }
 
-    );
+    stars.push({
+
+        x: Math.random() * canvas.width,
+
+        y: Math.random() * canvas.height,
+
+        size,
+
+        alpha: 0.3 + Math.random() * 0.7,
+
+        twinkle: Math.random() * Math.PI * 2,
+
+        driftX: (Math.random() - 0.5) * 0.03,
+
+        driftY: (Math.random() - 0.5) * 0.03
+
+    });
 
 }
 
-starGeometry.setAttribute(
+function animate() {
 
-    'position',
+    ctx.fillStyle = "#02040b";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    new THREE.Float32BufferAttribute(
-        positions,
-        3
-    )
+    for (const star of stars) {
 
-);
+        star.x += star.driftX;
+        star.y += star.driftY;
 
-const starMaterial = new THREE.PointsMaterial({
+        if (star.x < 0) star.x = canvas.width;
+        if (star.x > canvas.width) star.x = 0;
 
-    color:0xffffff,
+        if (star.y < 0) star.y = canvas.height;
+        if (star.y > canvas.height) star.y = 0;
 
-    size:2,
+        star.twinkle += 0.015;
 
-    transparent:true,
+        const brightness =
+            star.alpha +
+            Math.sin(star.twinkle) * 0.12;
 
-    opacity:.9
+        ctx.beginPath();
 
-});
+        ctx.arc(
+            star.x,
+            star.y,
+            star.size,
+            0,
+            Math.PI * 2
+        );
 
-const stars = new THREE.Points(
-    starGeometry,
-    starMaterial
-);
+        if (star.size > 2.5) {
 
-scene.add(stars);
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = "white";
 
-// Resize
-window.addEventListener("resize",()=>{
+        } else {
 
-camera.aspect=window.innerWidth/window.innerHeight;
+            ctx.shadowBlur = 0;
 
-camera.updateProjectionMatrix();
+        }
 
-renderer.setSize(
-window.innerWidth,
-window.innerHeight
-);
+        ctx.fillStyle = `rgba(255,255,255,${brightness})`;
 
-});
+        ctx.fill();
 
-// Animation
-function animate(){
+    }
 
-requestAnimationFrame(animate);
-
-stars.rotation.y +=0.0002;
-
-stars.rotation.x +=0.00005;
-
-renderer.render(scene,camera);
+    requestAnimationFrame(animate);
 
 }
 
