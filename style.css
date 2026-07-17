@@ -1,29 +1,156 @@
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
 html,
 body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
 
-width:100%;
-height:100%;
-overflow:hidden;
+    background:
+    radial-gradient(circle at center,#0b1024 0%,#05070f 45%,#000 100%);
 
-background:#02030a;
+    font-family:
+    "Georgia",
+    serif;
 
-font-family:sans-serif;
-
+    user-select:none;
+    touch-action:none;
 }
 
 #sky{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+    cursor:pointer;
+}
 
-display:block;
+#letter{
+    position:fixed;
+    inset:0;
 
-width:100%;
-height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 
-touch-action:none;
+    background:rgba(0,0,0,.65);
+
+    backdrop-filter:blur(8px);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:
+    opacity .45s ease,
+    visibility .45s ease;
+
+    z-index:100;
+}
+
+#letter.show{
+
+    opacity:1;
+
+    visibility:visible;
+
+}
+
+.paper{
+
+    width:min(92vw,420px);
+
+    max-height:82vh;
+
+    overflow:auto;
+
+    padding:35px;
+
+    border-radius:12px;
+
+    background:
+    linear-gradient(
+    180deg,
+    #f6ecd2,
+    #efe0bb
+    );
+
+    color:#3b2b16;
+
+    box-shadow:
+    0 0 60px rgba(0,0,0,.45);
+
+    transform:
+    scale(.8);
+
+    transition:
+    transform .4s ease;
+
+}
+
+#letter.show .paper{
+
+    transform:
+    scale(1);
+
+}
+
+.paper::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    pointer-events:none;
+
+    opacity:.12;
+
+    background-image:
+    repeating-linear-gradient(
+    transparent,
+    transparent 22px,
+    rgba(0,0,0,.03) 23px
+    );
+
+}
+
+#close{
+
+    float:right;
+
+    border:none;
+
+    background:none;
+
+    font-size:30px;
+
+    cursor:pointer;
+
+    color:#4b3921;
+
+}
+
+#close:hover{
+
+    transform:scale(1.15);
+
+}
+
+#letterText{
+
+    margin-top:20px;
+
+    font-size:18px;
+
+    line-height:1.9;
+
+    white-space:pre-line;
 
 }
