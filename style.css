@@ -4,20 +4,26 @@ padding:0;
 box-sizing:border-box;
 }
 
-html,body{
+html,
+body{
 
 width:100%;
 height:100%;
 overflow:hidden;
-background:#02040b;
+
+background:#02030a;
+
+font-family:sans-serif;
 
 }
 
-canvas{
+#sky{
 
 display:block;
+
 width:100%;
 height:100%;
+
 touch-action:none;
 
 }
