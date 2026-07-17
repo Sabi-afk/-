@@ -14,7 +14,7 @@ addEventListener("resize",resize);
 
 const stars=[];
 
-for(let i=0;i<2500;i++){
+for(let i=0;i<1500;i++){
 
     let size;
 
@@ -46,7 +46,7 @@ for(let i=0;i<2500;i++){
 
         twinkle:Math.random()*Math.PI*2,
 
-        speed:(Math.random()-.5)*0.03
+        speed:(Math.random()-.5)*0.01
 
     });
 
@@ -75,11 +75,15 @@ function draw(){
 
         ctx.fillStyle=`rgba(255,255,255,${a})`;
 
-        ctx.shadowBlur=s.size*8;
+        if(s.size>2){
+    ctx.shadowBlur=12;
+}else{
+    ctx.shadowBlur=0;
+}
 
         ctx.shadowColor="white";
 
-        ctx.fill();
+        ctx.shadowBlur=0;
 
     }
 
